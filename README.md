@@ -14,11 +14,14 @@ C++ implementation of the flash game "Age of War". The game is played in a termi
     - [x] Taking damages
 
 - [ ] Playground:
-    - [ ] Constructor
-    - [ ] Destructor
-    - [ ] Getters
-      - [ ] 
-    - [ ]
+    - [x] Constructor
+    - [] Destructor
+    - [x] Getters
+      - [x] Number of turns
+      - [x] Life levels of player's bases
+    - [x] Win method
+    - [ ] Play method
+    - [ ] Display board
 
 - [ ] Unit:
     - [ ] Constructor

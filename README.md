@@ -52,3 +52,4 @@ C++ implementation of the flash game "Age of War". The game is played in a termi
     - [ ] Play a game
     - [ ] 2 players mode
     - [ ] Player vs Bot mode
+    - [ ] Save game status

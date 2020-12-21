@@ -1,6 +1,6 @@
 #include "Base.hpp"
 
-Base::Base (int playerID) : life(100), gold(0), PLAYER_ID(playerID) {}
+Base::Base (int playerID) : life(100), gold(0), PLAYERID(playerID) {}
 
 Base::~Base () {}
 

@@ -6,13 +6,12 @@
 class Unit
 {
   int life, price, damage;
-  const int PLAYER_ID;
+  const int PLAYERID;
   std::vector<bool> range;
 
 public:
   Unit(int playerID);
   ~Unit();
-  void forward();
   void attack(Unit target);
   void targeted(int damages);
 };

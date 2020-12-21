@@ -7,7 +7,7 @@
 class Base
 {
   int life, gold;
-  const int PLAYER_ID;
+  const int PLAYERID;
   std::vector<Unit> army;
 
 public:

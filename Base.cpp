@@ -8,9 +8,23 @@ int Base::getGold() const { return gold; }
 
 int Base::getLife() const { return life; }
 
-int Base::getPlayerID() const { return PLAYER_ID; }
+int Base::getPlayerID() const { return PLAYERID; }
 
-void Base::spawn (Unit newSoldier) { army.push_back(newSoldier); }
+void Base::spawn (int choice)
+{
+  switch (choice) {
+    case 1:
+      army.push_back(Warrior(PLAYERID));
+      break;
+    case 2:
+      army.push_back(Archer(PLAYERID));
+      break;
+    case 3:
+      army.push_back(Trebuchet(PLAYERID));
+      break;
+    default: ;
+  }
+}
 
 void Base::targeted (int damages) { life -= damages; }
 

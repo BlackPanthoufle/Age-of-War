@@ -3,6 +3,11 @@
 
 #include <vector>
 #include "Unit.hpp"
+#include "Archer.hpp"
+#include "Trebuchet.hpp"
+#include "Warrior.hpp"
+#include "SuperWarrior.hpp"
+
 
 class Base
 {
@@ -16,7 +21,7 @@ public:
   int getGold() const;
   int getLife() const;
   int getPlayerID() const;
-  void spawn(Unit newSoldier);
+  void spawn(int choice);
   void targeted(int damages);
   void goldPay(int pay);
 };

@@ -80,40 +80,20 @@ void Playground::play(){
 
 void Playground::display()
 {
-  std::string empty = "____ ";
-  int boxNumber = 1;
+  std::string empty = "_____ ";
 
-  // castles top
-  std::cout <<
-R"(|\/\/\/|                                                   |\/\/\/|
-|  P1  |                                                   |  P2  |)" << '\n';
+  // castles
+  std::cout << R"(
+  _   |~  _                                                         _   |~  _
+ [_]--'--[_]                                                       [_]--'--[_]
+ |'|""`""|'|                                                       |'|""`""|'|
+ | | /^\ | |                                                       | | /^\ | |
+ |_|_|I|_|_|                                                       |_|_|I|_|_|)" << "\n\n\n\n    ";
 
-  for (int i = 0 ; i < 4 ; i++)
-  {
-    int j = 0;
+ for(int i = 0 ; i < 72 ; i+=6)
+ {
+   std::cout << empty;
+ }
 
-    while (j < 67)
-    {
-      if (j == 0 || j == 7 || j == 59 || j == 66)
-      {
-        std::cout << "| ";
-        j += 2;
-      }
-      else
-      {
-        if (i == 3 && units[boxNumber] == nullptr)
-        {
-          std::cout << empty;
-          j += 5;
-          boxNumber += 1;
-        }
-        else
-        {
-          std::cout << " ";
-          j += 1;
-        }
-      }
-    }
-    std::cout << '\n';
-  }
+
 }

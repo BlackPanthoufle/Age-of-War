@@ -9,7 +9,6 @@ public:
   Trebuchet(int playerID);
   ~Trebuchet();
   bool fstAction(std::vector<Unit*> ground);
-  bool sndAction(std::vector<Unit*> ground);
   bool thdAction(std::vector<Unit*> ground);
 };
 

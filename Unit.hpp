@@ -20,6 +20,12 @@ public:
   std::vector<int> getRange() const { return range; }
   int getPlayerID() const { return PLAYERID; }
   int getDamages() const { return damage; }
+  bool getActionBool() const { return fstActionDone; }
+  void switchFAD()
+  {
+    if (fstActionDone) fstActionDone = false;
+    else fstActionDone = true;
+  }
 };
 
 #endif

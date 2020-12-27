@@ -11,7 +11,7 @@ int main()
 {
   Playground playground;
 
-  playground.display();
+  playground.play();
 
   return 0;
 }

@@ -1,13 +1,13 @@
-#include "Warrior.hpp"
+#include "../header/SuperWarrior.hpp"
 
 
-Warrior::Warrior(int playerID): Unit(10, 10, 4, playerID, {1}) {}
+SuperWarrior::SuperWarrior(int playerID): Warrior(playerID) {}
 
 
-Warrior::~Warrior() {}
+SuperWarrior::~SuperWarrior() {}
 
 
-bool Warrior::fstAction(std::vector<Unit*> ground)
+bool SuperWarrior::fstAction(std::vector<Unit*> ground)
 {
   std::vector<int> rng = getRange();
   unsigned int index = 0;
@@ -20,7 +20,6 @@ bool Warrior::fstAction(std::vector<Unit*> ground)
       if (ground[index + 1] != NULL && ground[index + 1]->getPlayerID() == 2)
       {
         ground[index + 1]->targeted(getDamages());
-        switchFAD();
         return true;
       }
       break;
@@ -28,7 +27,6 @@ bool Warrior::fstAction(std::vector<Unit*> ground)
       if (ground[index - 1] != NULL && ground[index + 1]->getPlayerID() == 1)
       {
         ground[index - 1]->targeted(getDamages());
-        switchFAD();
         return true;
       }
       break;
@@ -39,7 +37,7 @@ bool Warrior::fstAction(std::vector<Unit*> ground)
 }
 
 
-bool Warrior::sndAction(std::vector<Unit*> ground)
+bool SuperWarrior::sndAction(std::vector<Unit*> ground)
 {
   unsigned int index = 0;
 
@@ -73,36 +71,31 @@ bool Warrior::sndAction(std::vector<Unit*> ground)
 }
 
 
-bool Warrior::thdAction(std::vector<Unit*> ground)
+bool SuperWarrior::thdAction(std::vector<Unit*> ground)
 {
-  if (getActionBool())
+  std::vector<int> rng = getRange();
+  unsigned int index = 0;
+
+  while (ground[index] != this && index < ground.size()) { index++; }
+
+  switch (getPlayerID())
   {
-    std::vector<int> rng = getRange();
-    unsigned int index = 0;
-
-    while (ground[index] != this && index < ground.size()) { index++; }
-
-    switch (getPlayerID())
+    case 1:
+    if (ground[index + 1] != NULL)
     {
-      case 1:
-      if (ground[index + 1] != NULL)
-      {
-        ground[index + 1]->targeted(getDamages());
-        switchFAD();
-        return true;
-      }
-      break;
-      case 2:
-      if (ground[index - 1] != NULL)
-      {
-        ground[index - 1]->targeted(getDamages());
-        switchFAD();
-        return true;
-      }
-      break;
-      default: break;
+      ground[index + 1]->targeted(getDamages());
+      return true;
     }
-    return false;
+    break;
+    case 2:
+    if (ground[index - 1] != NULL)
+    {
+      ground[index - 1]->targeted(getDamages());
+      return true;
+    }
+    break;
+    default: break;
   }
-  else return false;
+
+  return false;
 }

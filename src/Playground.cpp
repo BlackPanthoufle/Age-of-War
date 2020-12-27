@@ -1,4 +1,4 @@
-#include "Playground.hpp"
+#include "../header/Playground.hpp"
 
 Playground::Playground(): turns(0), MAXTURNS(100), player1(1), player2(2), units(12) {}
 

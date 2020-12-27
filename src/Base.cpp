@@ -1,4 +1,4 @@
-#include "Base.hpp"
+#include "../header/Base.hpp"
 
 Base::Base (int playerID) : life(100), gold(0), PLAYERID(playerID) {}
 

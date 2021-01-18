@@ -3,12 +3,12 @@
 
 #include "Unit.hpp"
 
-class Archer : public Unit {
+class Archer : public Unit
+{
 public:
   Archer(int playerID);
   ~Archer();
-  bool fstAction(std::vector<Unit*> ground);
-  bool sndAction(std::vector<Unit*> ground);
+  std::string getVisual();
 };
 
 #endif

@@ -2,30 +2,28 @@
 #define UNIT
 
 #include <vector>
+#include <iostream>
 
 class Unit
 {
-  int life, price, damage;
+  int life;
+  const int price, damage;
   const int PLAYERID;
-  std::vector<int> range;
   bool fstActionDone;
 
 public:
-  Unit(int l, int p, int dmg, int playerID, std::vector<int> rng);
+  Unit(int l, int p, int dmg, int playerID);
   ~Unit();
-  virtual bool fstAction(std::vector<Unit*> ground)/* = 0*/;
-  virtual bool sndAction(std::vector<Unit*> ground);
-  virtual bool thdAction(std::vector<Unit*> ground)/* = 0*/;
+  virtual std::string getVisual();
+  virtual bool getEvolution() const { return false; }
+  virtual void superWarriorEvolution() {;}
   void targeted(int damages);
-  std::vector<int> getRange() const { return range; }
   int getPlayerID() const { return PLAYERID; }
+  int getLife() const { return life; }
   int getDamages() const { return damage; }
   bool getActionBool() const { return fstActionDone; }
-  void switchFAD()
-  {
-    if (fstActionDone) fstActionDone = false;
-    else fstActionDone = true;
-  }
+  void switchOnFAD();
+  void switchOffFAD();
 };
 
 #endif

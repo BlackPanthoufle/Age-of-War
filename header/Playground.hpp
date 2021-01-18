@@ -1,9 +1,13 @@
 #ifndef PLAYGROUND
 #define PLAYGROUND
 
-#include <vector>
 #include <iostream>
+#include <iomanip>
+#include <vector>
 #include "Unit.hpp"
+#include "Warrior.hpp"
+#include "Archer.hpp"
+#include "Trebuchet.hpp"
 #include "Base.hpp"
 
 class Playground
@@ -11,7 +15,7 @@ class Playground
   int turns;
   const int MAXTURNS;
   Base player1, player2;
-  std::vector<Unit*> units;
+  std::vector<Unit*> ground;
   bool oneWins, twoWins;
 
 public:
@@ -23,6 +27,10 @@ public:
   bool win();
   void play();
   void display();
+  void spawnUnit(int playerID, int choice);
+  void firstAction(int index);
+  bool secondAction(int index);
+  void thirdAction(int index);
 };
 
 #endif

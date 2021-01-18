@@ -5,13 +5,14 @@
 
 class Warrior : public Unit
 {
+  bool evolution;
 public:
   Warrior(int playerID);
   ~Warrior();
   bool superWarrior();
-  bool fstAction(std::vector<Unit*> ground);
-  bool sndAction(std::vector<Unit*> ground);
-  bool thdAction(std::vector<Unit*> ground);
+  std::string getVisual();
+  void superWarriorEvolution();
+  bool getEvolution() const;
 };
 
 #endif

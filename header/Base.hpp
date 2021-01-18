@@ -6,14 +6,12 @@
 #include "Archer.hpp"
 #include "Trebuchet.hpp"
 #include "Warrior.hpp"
-#include "SuperWarrior.hpp"
 
 
 class Base
 {
   int life, gold;
   const int PLAYERID;
-  std::vector<Unit> army;
 
 public:
   Base(int playerID);
@@ -21,7 +19,7 @@ public:
   int getGold() const;
   int getLife() const;
   int getPlayerID() const;
-  void spawn(int choice);
+  void spawn(int choice, std::vector<Unit*> *ground, std::vector<bool> *occupied);
   void targeted(int damages);
   void goldPay(int pay);
 };

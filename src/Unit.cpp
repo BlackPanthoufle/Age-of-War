@@ -1,16 +1,17 @@
 #include "../header/Unit.hpp"
 
-Unit::Unit(int l, int p, int dmg, int playerID, std::vector<int> rng):life(l), price(p), damage(dmg), PLAYERID(playerID), range(rng)
-{
-  fstActionDone = false;
-}
+Unit::Unit(int l, int p, int dmg, int playerID) : life(l), price(p), damage(dmg), PLAYERID(playerID), fstActionDone(false) {}
 
 Unit::~Unit() {}
 
-bool Unit::fstAction(std::vector<Unit*> ground) {return true;}
-
-bool Unit::sndAction(std::vector<Unit*> ground) {return true;}
-
-bool Unit::thdAction(std::vector<Unit*> ground) {return true;}
 
 void Unit::targeted(int damages) { life -= damages; }
+
+
+std::string Unit::getVisual() { return "_____ "; }
+
+
+void Unit::switchOnFAD() { fstActionDone = true; }
+
+
+void Unit::switchOffFAD() { fstActionDone = false; }

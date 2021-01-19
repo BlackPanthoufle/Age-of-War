@@ -13,7 +13,7 @@ class Unit
 
 public:
   Unit(int l, int p, int dmg, int playerID);
-  ~Unit();
+  virtual ~Unit();
   virtual std::string getVisual();
   virtual bool getEvolution() const { return false; }
   virtual void superWarriorEvolution() {;}
@@ -24,6 +24,7 @@ public:
   bool getActionBool() const { return fstActionDone; }
   void switchOnFAD();
   void switchOffFAD();
+  void setLife(int lifeLevel);
 };
 
 #endif

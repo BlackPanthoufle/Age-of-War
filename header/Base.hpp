@@ -22,6 +22,7 @@ public:
   void spawn(int choice, std::vector<Unit*> *ground, std::vector<bool> *occupied);
   void targeted(int damages);
   void goldPay(int pay);
+  void buyUnit(int price);
 };
 
 #endif

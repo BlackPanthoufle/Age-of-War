@@ -15,3 +15,5 @@ void Unit::switchOnFAD() { fstActionDone = true; }
 
 
 void Unit::switchOffFAD() { fstActionDone = false; }
+
+void Unit::setLife(int lifeLevel) { life = lifeLevel; }

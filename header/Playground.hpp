@@ -4,6 +4,8 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
+#include <thread>
+#include <chrono>
 #include "Unit.hpp"
 #include "Warrior.hpp"
 #include "Archer.hpp"
@@ -31,6 +33,8 @@ public:
   void firstAction(int index);
   bool secondAction(int index);
   void thirdAction(int index);
+  void AIGame();
+  void PVPGame();
 };
 
 #endif

@@ -20,3 +20,6 @@ void Base::targeted (int damages) { life -= damages; }
 
 
 void Base::goldPay(int pay) { gold += pay; }
+
+
+void Base::buyUnit(int pay) { gold -= pay; }

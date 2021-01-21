@@ -5,7 +5,10 @@ C++ implementation of the flash game "Age of War". The game is played in a termi
 - Playground:
   - Save game
   - Load game
-  - (Player vs Bot mode, bonus difficulty) 
+
+- Bonus memes:
+  - units ASCII art
+  - castle destroyed as life goes down
 
 - Report:
   - How to Manual (makefile, etc)

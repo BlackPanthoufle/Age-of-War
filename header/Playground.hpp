@@ -27,6 +27,8 @@ public:
   int getPlayer1Life() const;
   int getPlayer2Life() const;
   bool win();
+  void winningScreen();
+  void pauseScreen();
   void play();
   void display();
   void spawnUnit(int playerID, int choice);

@@ -20,6 +20,7 @@ public:
   void targeted(int damages);
   int getPlayerID() const { return PLAYERID; }
   int getLife() const { return life; }
+  int getPrice() const { return price; }
   int getDamages() const { return damage; }
   bool getActionBool() const { return fstActionDone; }
   void switchOnFAD();

@@ -4,6 +4,9 @@
 Archer::Archer(int playerID): Unit(8, 12, 3, playerID) {}
 
 
+Archer::Archer(int playerID, int life):Unit(life, 20, 6, playerID) {}
+
+
 Archer::~Archer() {}
 
 

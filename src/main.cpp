@@ -1,4 +1,3 @@
-#include <iostream>
 #include "../header/Playground.hpp"
 
 int main()
@@ -6,6 +5,8 @@ int main()
   Playground playground;
 
   playground.play();
+
+  //playground.saveScreen();
 
   return 0;
 }

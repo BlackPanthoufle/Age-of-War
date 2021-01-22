@@ -3,7 +3,6 @@ C++ implementation of the flash game "Age of War". The game is played in a termi
 
 # TODO List:
 - Playground:
-  - Save game
   - Load game
 
 - Bonus memes:

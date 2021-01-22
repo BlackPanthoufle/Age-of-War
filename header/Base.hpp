@@ -17,9 +17,10 @@ public:
   Base(int playerID);
   ~Base();
   int getGold() const;
+  void setGold(int newAmount);
   int getLife() const;
+  void setLife(int newAmount);
   int getPlayerID() const;
-  void spawn(int choice, std::vector<Unit*> *ground, std::vector<bool> *occupied);
   void targeted(int damages);
   void goldPay(int pay);
   void buyUnit(int price);

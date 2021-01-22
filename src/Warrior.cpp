@@ -4,6 +4,9 @@
 Warrior::Warrior(int playerID): Unit(10, 10, 4, playerID), evolution(false) {}
 
 
+Warrior::Warrior(int playerID, int life, bool evolved): Unit(life, 10, 4, playerID), evolution(evolved) {}
+
+
 Warrior::~Warrior() {}
 
 
@@ -16,8 +19,4 @@ std::string Warrior::getVisual()
 
 bool Warrior::getEvolution() const { return evolution; }
 
-void Warrior::superWarriorEvolution()
-{
-  setLife(10);
-  evolution = true;
-}
+void Warrior::superWarriorEvolution() { evolution = true; }

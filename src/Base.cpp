@@ -10,7 +10,13 @@ Base::~Base () {}
 int Base::getGold() const { return gold; }
 
 
+void Base::setGold(int newAmount) { gold = newAmount; }
+
+
 int Base::getLife() const { return life; }
+
+
+void Base::setLife(int newAmount) { life = newAmount; } 
 
 
 int Base::getPlayerID() const { return PLAYERID; }

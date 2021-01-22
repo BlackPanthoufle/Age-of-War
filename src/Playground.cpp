@@ -4,7 +4,13 @@
 Playground::Playground(): turns(0), MAXTURNS(100), player1(1), player2(2), ground(12), oneWins(false), twoWins(false) {}
 
 
-Playground::~Playground() {}
+Playground::~Playground()
+{
+  for (auto i = 0 ; i < 12 ; i++)
+  {
+    if (ground[i] != nullptr) delete ground[i];
+  }
+}
 
 
 int Playground::getTurns() const { return turns; }
@@ -107,7 +113,7 @@ void Playground::pauseScreen()
       }
       case 2:
       {
-        //save game
+        saveScreen();
         break;
       }
     }
@@ -116,11 +122,84 @@ void Playground::pauseScreen()
 }
 
 
-void Playground::play(){
+void Playground::saveScreen()
+{
+  system("clear");
+
+  std::string response;
+
+  do
+  {
+    std::cout << "                        DO YOU WANT TO SAVE THIS GAME ? [y/n]";
+    std::cin >> response;
+  }
+  while(response != "y" && response != "Y" && response != "n" && response != "N");
+
+  if (response == "y" || response == "Y")
+  {
+    std::string name, location;
+    bool overwrite = false;
+    std::ofstream saveFile;
+
+    do
+    {
+      std::cout << "                        ENTER THE NAME OF THE FILE: ";
+      std::cin >> name;
+
+      location = "../Saved games/" + name + ".txt";
+      std::ifstream doublesCheck;
+
+      doublesCheck.open(location);
+
+      if (doublesCheck)
+      {
+        std::string choice;
+
+        std::cout << "\n                        FILE ALREADY EXISTS !" << std::endl;
+        std::cout << "                        DO YOU WANT TO OVERWRITE ? [y/n]  ";
+        std::cin >> choice;
+
+        if (choice == "y" || choice == "Y" ) { overwrite = true; }
+      }
+      else overwrite = true;
+    }
+    while (!overwrite);
+
+    saveFile.open(location);
+
+    //Game against AI
+    saveFile << AIgame << '\n';
+
+    //Saving the current round
+    saveFile << turns << "\n\n";
+
+    //Saving the status of first player
+    saveFile << player1.getPlayerID() << '\n' << player1.getLife() << '\n' << player1.getGold() << "\n\n";
+
+    //Saving the status of second player
+    saveFile << player2.getPlayerID() << '\n' << player2.getLife() << '\n' << player2.getGold() << "\n\n";
+
+    //Saving the units on the playground
+    for (auto i = 0 ; i < 12 ; i++)
+    {
+      if (ground[i] != nullptr) saveFile << ground[i]->getVisual() << "  " << ground[i]->getPlayerID() << "  " << ground[i]->getLife() << '\n';
+      else saveFile << "_____\n";
+    }
+
+    saveFile.close();
+    std::cout << "FILE SAVED SUCCESSFULLY" << '\n';
+    std::this_thread::sleep_for (std::chrono::milliseconds(100));
+  }
+}
+
+
+void Playground::play()
+{
   int gamemode;
   bool close = false;
 
-  do {
+  do
+  {
     system("clear");
     std::cout << R"(
                     █████╗  ██████╗ ███████╗     ██████╗ ███████╗    ██╗    ██╗ █████╗ ██████╗
@@ -132,7 +211,7 @@ void Playground::play(){
     )" << "\n\n";
 
 
-    std::cout << "1) Player vs Player\n2) Player vs AI\n3) EXIT" << '\n';
+    std::cout << "1) PLAYER VS PLAYER\n2) PLAYER VS AI\n3) LOAD SAVE\n4) EXIT" << '\n';
     std::cin >> gamemode;
     system("clear");
 
@@ -140,28 +219,117 @@ void Playground::play(){
     {
       case 1:
       {
-        PVPGame();
+        AIgame = false;
+        PVPGame(false);
         break;
       }
       case 2:
       {
-        AIGame();
+        AIgame = true;
+        AIGame(false);
         break;
       }
       case 3:
       {
-        std::cout << "Bye !" << std::endl;
-        close = true;
+        std::string load = "../Saved games/", selection;
+        std::ifstream loadFile;
+        bool exists = false;
+
+        do
+        {
+          std::cout << "                        ENTER THE NAME OF THE FILE: ";
+          std::cin >> selection;
+          load += selection + ".txt";
+          loadFile.open(load);
+
+          if (loadFile) { exists = true; }
+          else { std::cout << '\n' << selection << " does not exist\n"; }
+        }
+        while(!exists);
+
+        int linecount = 0, groundcount = 0;
+        std::string line;
+
+        while (std::getline(loadFile, line))
+        {
+          //Loading the game mode
+          if (linecount == 0)
+          {
+            AIgame = '0' - line[0];
+          }
+          //Loading the current number of round
+          else if (linecount == 1)
+          {
+            turns = std::stoi(line);
+          }
+          //Loading player 1 informations
+          else if (linecount == 4)
+          {
+            player1.setLife(std::stoi(line));
+          }
+          else if (linecount == 5)
+          {
+            player1.setGold(std::stoi(line));
+          }
+          //Loading player 2 informations
+          else if (linecount == 8)
+          {
+            player2.setLife(std::stoi(line));
+          }
+          else if (linecount == 9)
+          {
+            player2.setGold(std::stoi(line));
+          }
+          //Loading ground
+          else if (linecount > 10 && linecount < 23)
+          {
+            std::string visual = line.substr(0, 5);
+
+            if (visual != "_____")
+            {
+              int id = line[8] - '0', life = std::stoi(line.substr(11));
+
+              if (visual == "__W__")
+              {
+                ground[groundcount] = new Warrior(id, life, false);
+              }
+              else if (visual == "__S__")
+              {
+                ground[groundcount] = new Warrior(id, life, true);
+              }
+              else if (visual == "__A__")
+              {
+                ground[groundcount] = new Archer(id, life);
+              }
+              else if (visual == "__T__")
+              {
+                ground[groundcount] = new Trebuchet(id, life);
+              }
+            }
+            else ground[groundcount] = nullptr;
+
+            groundcount++;
+          }
+
+          linecount++;
+        }
+
+        loadFile.close();
+
+        if (AIgame) AIGame(true);
+        else PVPGame(true);
+
         break;
       }
-      default:
+      case 4:
       {
-        std::cout << "Bye !" << std::endl;
+        std::cout << "BYE !" << std::endl;
         close = true;
         break;
       }
     }
-  } while(!close);
+  }
+  while(!close);
 }
 
 
@@ -171,11 +339,11 @@ void Playground::display()
   std::cout << "ROUND " << turns << '\n';
   std::cout << "\n\n                  " << player1.getLife() << "                                                                " << player2.getLife() << '\n';
   std::cout << R"(
-                _   |~  _                                                         _   |~  _
+                _   |~  _                                                         _   |>  _
                [_]--'--[_]                                                       [_]--'--[_]
-               |'|""`""|'|                                                       |'|""`""|'|
+               |'|""'""|'|                                                       |'|""`""|'|
                | | /^\ | |                                                       | | /^\ | |
-               |_|_|I|_|_|                                                       |_|_|I|_|_|)" << "\n\n\n\n                   ";
+               |_|_|I|_|_|                                                       |_|_|H|_|_|)" << "\n\n\n\n                   ";
 
   for(auto i = 0 ; i < 12 ; i++)
   {
@@ -206,7 +374,7 @@ void Playground::display()
     else std::cout << "      ";
   }
 
-  std::cout << "\n\n                Gold : " << player1.getGold() << "                                                         Gold : " << player2.getGold() << "\n\n\n";
+  std::cout << "\n\n                GOLD : " << player1.getGold() << "                                                         GOLD : " << player2.getGold() << "\n\n\n";
 }
 
 
@@ -440,10 +608,121 @@ void Playground::thirdAction (int index)
 }
 
 
-void Playground::PVPGame()
+void Playground::PVPGame(bool load)
 {
   int choice;
   bool canBuy = false;
+
+  if (load)
+  {
+    display();
+
+    if ((player1.getGold() >= 10) && (ground[0] == nullptr))
+    {
+      while (!canBuy)
+      {
+        display();
+        std::cout << "Player 1, buy a unit:\n1) Warrior (10g) 2) Archer (12g) 3) Trebuchet (20g) 4) Skip 5) Pause" << '\n';
+        std::cin >> choice;
+
+        switch (choice) {
+          case 1:
+          {
+            if (player1.getGold() >= 10)
+            {
+              player1.buyUnit(10);
+              canBuy = true;
+            }
+            break;
+          }
+          case 2:
+          {
+            if (player1.getGold() >= 12)
+            {
+              player1.buyUnit(12);
+              canBuy = true;
+            }
+            break;
+          }
+          case 3:
+          {
+            if (player1.getGold() >= 20)
+            {
+              player1.buyUnit(20);
+              canBuy = true;
+            }
+            break;
+          }
+          case 4:
+          {
+            canBuy = true;
+            break;
+          }
+          case 5:
+          {
+            pauseScreen();
+            break;
+          }
+        }
+      }
+      spawnUnit(1, choice);
+      display();
+    }
+
+    canBuy = false;
+
+    if ((player2.getGold() >= 10) && (ground[0] == nullptr))
+    {
+      while (!canBuy)
+      {
+        display();
+        std::cout << "Player 2, buy a unit:\n1) Warrior (10g) 2) Archer (12g) 3) Trebuchet (20g) 4) Skip 5) Pause" << '\n';
+        std::cin >> choice;
+
+        switch (choice) {
+          case 1:
+          {
+            if (player2.getGold() >= 10)
+            {
+              player2.buyUnit(10);
+              canBuy = true;
+            }
+            break;
+          }
+          case 2:
+          {
+            if (player2.getGold() >= 12)
+            {
+              player2.buyUnit(12);
+              canBuy = true;
+            }
+            break;
+          }
+          case 3:
+          {
+            if (player2.getGold() >= 20)
+            {
+              player2.buyUnit(20);
+              canBuy = true;
+            }
+            break;
+          }
+          case 4:
+          {
+            canBuy = true;
+            break;
+          }
+          case 5:
+          {
+            pauseScreen();
+            break;
+          }
+        }
+      }
+      spawnUnit(2, choice);
+      display();
+    }
+  }
 
   while(!win() && turns < MAXTURNS)
   {
@@ -634,10 +913,90 @@ void Playground::PVPGame()
 }
 
 
-void Playground::AIGame()
+void Playground::AIGame(bool load)
 {
   int choice;
   bool canBuy = false;
+
+  if (load)
+  {
+    display();
+
+    if ((player1.getGold() >= 10) && (ground[0] == nullptr))
+    {
+      while (!canBuy)
+      {
+        display();
+        std::cout << "Player 1, buy a unit:\n1) Warrior (10g) 2) Archer (12g) 3) Trebuchet (20g) 4) Skip 5) Pause" << '\n';
+        std::cin >> choice;
+
+        switch (choice) {
+          case 1:
+          {
+            if (player1.getGold() >= 10)
+            {
+              player1.buyUnit(10);
+              canBuy = true;
+            }
+            break;
+          }
+          case 2:
+          {
+            if (player1.getGold() >= 12)
+            {
+              player1.buyUnit(12);
+              canBuy = true;
+            }
+            break;
+          }
+          case 3:
+          {
+            if (player1.getGold() >= 20)
+            {
+              player1.buyUnit(20);
+              canBuy = true;
+            }
+            break;
+          }
+          case 4:
+          {
+            canBuy = true;
+            break;
+          }
+          case 5:
+          {
+            pauseScreen();
+            break;
+          }
+        }
+      }
+      spawnUnit(1, choice);
+      display();
+    }
+
+    canBuy = false;
+
+    if ((player2.getGold() >= 10) && (ground[11] == nullptr))
+    {
+      if (player2.getGold() >= 20)
+      {
+        player2.buyUnit(20);
+        spawnUnit(2, 3);
+      }
+      else if (player2.getGold() >= 12 && player2.getGold() < 20)
+      {
+        player2.buyUnit(12);
+        spawnUnit(2, 2);
+      }
+      else if (player2.getGold() >= 10 && player2.getGold() < 12)
+      {
+        player2.buyUnit(10);
+        spawnUnit(2, 1);
+      }
+
+      display();
+    }
+  }
 
   while(!win() && turns < MAXTURNS)
   {
@@ -783,7 +1142,7 @@ void Playground::AIGame()
       }
       else if (player2.getGold() >= 10 && player2.getGold() < 12)
       {
-        player2.buyUnit(12);
+        player2.buyUnit(10);
         spawnUnit(2, 1);
       }
 

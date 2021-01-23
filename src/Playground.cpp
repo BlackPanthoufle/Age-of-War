@@ -130,7 +130,7 @@ void Playground::saveScreen()
 
   do
   {
-    std::cout << "                        DO YOU WANT TO SAVE THIS GAME ? [y/n]";
+    std::cout << "                        DO YOU WANT TO SAVE THIS GAME ? [y/n] ";
     std::cin >> response;
   }
   while(response != "y" && response != "Y" && response != "n" && response != "N");
@@ -211,7 +211,7 @@ void Playground::play()
     )" << "\n\n";
 
 
-    std::cout << "1) PLAYER VS PLAYER\n2) PLAYER VS AI\n3) LOAD SAVE\n4) EXIT" << '\n';
+    std::cout << "1) PLAYER VS PLAYER\n2) PLAYER VS COMPUTER\n3) LOAD SAVE\n4) EXIT" << '\n';
     std::cin >> gamemode;
     system("clear");
 
@@ -233,19 +233,22 @@ void Playground::play()
       {
         std::string load = "../Saved games/", selection;
         std::ifstream loadFile;
-        bool exists = false;
 
-        do
+        std::cout << "                        ENTER THE NAME OF THE FILE: ";
+        std::cin >> selection;
+        load += selection + ".txt";
+        loadFile.open(load);
+
+        while(!loadFile)
         {
+          loadFile.clear();
+          load =  "../Saved games/";
+          std::cout << '\n' << selection << " does not exist\n";
           std::cout << "                        ENTER THE NAME OF THE FILE: ";
           std::cin >> selection;
           load += selection + ".txt";
           loadFile.open(load);
-
-          if (loadFile) { exists = true; }
-          else { std::cout << '\n' << selection << " does not exist\n"; }
         }
-        while(!exists);
 
         int linecount = 0, groundcount = 0;
         std::string line;
@@ -496,7 +499,7 @@ void Playground::firstAction (int index)
           ground[index + range] = nullptr;
         }
 
-        if (ground[index + range + direction] != nullptr)
+        if (ground[index + range + direction] != nullptr && ((index + range + direction) >= 0) && ((index + range + direction) < 12))
         {
           ground[index + range + direction]->targeted(ground[index]->getDamages());
 
@@ -520,6 +523,11 @@ void Playground::firstAction (int index)
         else if (((index + range) == 11) && ground[index]->getPlayerID() == 1)
         {
           player2.targeted(ground[index]->getDamages());
+          ground[index]->switchOnFAD();
+        }
+        else if ((abs(range + direction) >= abs(rangeMax)) && (ground[index + range + direction] != nullptr) && (ground[index]->getPlayerID() != ground[index + range + direction]->getPlayerID()))
+        {
+          ground[index + range + direction]->targeted(ground[index]->getDamages());
           ground[index]->switchOnFAD();
         }
       }
@@ -591,18 +599,25 @@ void Playground::thirdAction (int index)
     {
       direction = 1;
       limit = 11;
+
+      if (ground[index + direction] == nullptr && ((index + direction) < limit))
+      {
+        ground[index + direction] = ground[index];
+        ground[index] = nullptr;
+      }
     }
     else if (ground[index]->getPlayerID() == 2)
     {
       direction = -1;
       limit = 0;
+
+      if (ground[index + direction] == nullptr && ((index + direction) > limit))
+      {
+        ground[index + direction] = ground[index];
+        ground[index] = nullptr;
+      }
     }
 
-    if (ground[index + direction] == nullptr && ((index + direction) < limit))
-    {
-      ground[index + direction] = ground[index];
-      ground[index] = nullptr;
-    }
   }
   else ground[index]->switchOffFAD();
 }
@@ -676,7 +691,7 @@ void Playground::PVPGame(bool load)
       while (!canBuy)
       {
         display();
-        std::cout << "Player 2, buy a unit:\n1) Warrior (10g) 2) Archer (12g) 3) Trebuchet (20g) 4) Skip 5) Pause" << '\n';
+        std::cout << "Player 2, buy a unit:\n1) Warrior (10g) 2) Archer (12g) 3) Trebuchet (20g) 4) Skip" << '\n';
         std::cin >> choice;
 
         switch (choice) {
@@ -710,11 +725,6 @@ void Playground::PVPGame(bool load)
           case 4:
           {
             canBuy = true;
-            break;
-          }
-          case 5:
-          {
-            pauseScreen();
             break;
           }
         }
@@ -859,7 +869,7 @@ void Playground::PVPGame(bool load)
       while (!canBuy)
       {
         display();
-        std::cout << "Player 2, buy a unit:\n1) Warrior (10g) 2) Archer (12g) 3) Trebuchet (20g) 4) Skip 5) Pause" << '\n';
+        std::cout << "Player 2, buy a unit:\n1) Warrior (10g) 2) Archer (12g) 3) Trebuchet (20g) 4) Skip" << '\n';
         std::cin >> choice;
 
         switch (choice) {
@@ -893,11 +903,6 @@ void Playground::PVPGame(bool load)
           case 4:
           {
             canBuy = true;
-            break;
-          }
-          case 5:
-          {
-            pauseScreen();
             break;
           }
         }

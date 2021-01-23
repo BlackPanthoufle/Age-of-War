@@ -16,7 +16,7 @@ public:
   virtual ~Unit();
   virtual std::string getVisual();
   virtual bool getEvolution() const { return false; }
-  virtual void superWarriorEvolution() {;}
+  virtual void superWarriorEvolution() {}
   void targeted(int damages);
   int getPlayerID() const { return PLAYERID; }
   int getLife() const { return life; }

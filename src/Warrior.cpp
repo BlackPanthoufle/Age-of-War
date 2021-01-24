@@ -19,4 +19,5 @@ std::string Warrior::getVisual()
 
 bool Warrior::getEvolution() const { return evolution; }
 
+
 void Warrior::superWarriorEvolution() { evolution = true; }

@@ -22,6 +22,12 @@ int Playground::getPlayer1Life() const { return player1.getLife(); }
 int Playground::getPlayer2Life() const { return player2.getLife(); }
 
 
+/*
+* Checks if a player won the game
+* Default way to win is to lower the life of the other player to 0
+* Or if the maximum number of turns is exceeded and a player's life is superior to the other
+* There is no possibility to tie the game
+*/
 bool Playground::win()
 {
   if (getPlayer1Life() <= 0)
@@ -41,13 +47,14 @@ bool Playground::win()
       twoWins = true;
       return true;
     }
-    else
+    else if (getPlayer1Life() > getPlayer2Life())
     {
       oneWins = true;
       return true;
     }
+    else return false;
   }
-  else { return false; }
+  else return false;
 }
 
 
@@ -95,13 +102,13 @@ void Playground::pauseScreen()
   do
   {
     system("clear");
-    std::cout << "                        PAUSE MENU" << '\n';
+    std::cout << "                                                PAUSE MENU" << '\n';
     std::cout << R"(
-                      /| ________________
-                O|===|* >________________>
-                      \|
+                                              /| ________________
+                                        O|===|* >________________>
+                                              \|
     )" << "\n\n\n";
-    std::cout << "                        1) Resume 2) Save\n";
+    std::cout << "                                                1) Resume 2) Save\n";
     std::cin >> choice;
 
     switch (choice)
@@ -167,8 +174,8 @@ void Playground::saveScreen()
 
     saveFile.open(location);
 
-    //Game against AI
-    saveFile << AIgame << '\n';
+    //Saves if the game was against computer or between two players
+    saveFile << computergame << '\n';
 
     //Saving the current round
     saveFile << turns << "\n\n";
@@ -219,14 +226,14 @@ void Playground::play()
     {
       case 1:
       {
-        AIgame = false;
+        computergame = false;
         PVPGame(false);
         break;
       }
       case 2:
       {
-        AIgame = true;
-        AIGame(false);
+        computergame = true;
+        computerGame(false);
         break;
       }
       case 3:
@@ -258,7 +265,7 @@ void Playground::play()
           //Loading the game mode
           if (linecount == 0)
           {
-            AIgame = '0' - line[0];
+            computergame = '0' - line[0];
           }
           //Loading the current number of round
           else if (linecount == 1)
@@ -319,7 +326,7 @@ void Playground::play()
 
         loadFile.close();
 
-        if (AIgame) AIGame(true);
+        if (computergame) computerGame(true);
         else PVPGame(true);
 
         break;
@@ -385,10 +392,11 @@ void Playground::spawnUnit(int playerID, int choice)
 {
   if (choice != 4)
   {
+    int spawnSpot;
+
     Warrior* warrior = new Warrior(playerID);
     Archer* archer = new Archer(playerID);
     Trebuchet* trebuchet = new Trebuchet(playerID);
-    int spawnSpot;
 
     if (playerID == 1) spawnSpot = 0;
     else if (playerID == 2) spawnSpot = 11;
@@ -422,13 +430,15 @@ void Playground::firstAction (int index)
   if (ground[index]->getPlayerID() == 1) direction = 1;
   else if (ground[index]->getPlayerID() == 2) direction = -1;
 
-
   if ((ground[index]->getVisual() == "__W__ ") || (ground[index]->getVisual() == "__S__ "))
   {
+    //If another unit is in front of warrior or super-warrior
     if (ground[index + direction] != nullptr && ground[index + direction]->getPlayerID() != ground[index]->getPlayerID())
     {
       ground[index + direction]->targeted(ground[index]->getDamages());
       ground[index]->switchOnFAD();
+
+      //If the other unit is killed
       if (ground[index + direction]->getLife() <= 0)
       {
         if (direction == 1) player1.goldPay(ground[index + direction]->getPrice() / 2);
@@ -436,9 +446,12 @@ void Playground::firstAction (int index)
 
         delete ground[index + direction];
         ground[index + direction] = nullptr;
+
+        //Checks if the warrior can be evolved
         if (!ground[index]->getEvolution()) ground[index]->superWarriorEvolution();
       }
     }
+    //If the warrior or super-warrior is in front the enemy castle and there is no unit in front of it, it attacks the castle
     else if ((((index + direction) == 0) || ((index + direction) == 11)) && (ground[index + direction] == nullptr))
     {
       if (ground[index]->getPlayerID() == 1) player2.targeted(ground[index]->getDamages());
@@ -448,14 +461,17 @@ void Playground::firstAction (int index)
   }
   else if (ground[index]->getVisual() == "__A__ ")
   {
-    int i = 0, range = direction;
+    int rangeMax = 4 * direction, range = direction;
 
-    while (!ground[index]->getActionBool() && i < 3)
+    while (!ground[index]->getActionBool() && abs(range) <= abs(rangeMax))
     {
+      //If another unit is in range the archer
       if (ground[index + range] != nullptr && ground[index + range]->getPlayerID() != ground[index]->getPlayerID())
       {
         ground[index + range]->targeted(ground[index]->getDamages());
+        ground[index]->switchOnFAD();
 
+        //If the enemy is killed
         if (ground[index + range]->getLife() <= 0)
         {
           if (direction == 1) player1.goldPay(ground[index + range]->getPrice() / 2);
@@ -465,8 +481,8 @@ void Playground::firstAction (int index)
           ground[index + range] = nullptr;
         }
 
-        ground[index]->switchOnFAD();
       }
+      //If the enemy castle in range and there is no unit in front of it, it attacks the castle
       else if ((((index + range) == 0) || ((index + range) == 11)) && (ground[index + range] == nullptr))
       {
         if (ground[index]->getPlayerID() == 1) player2.targeted(ground[index]->getDamages());
@@ -476,7 +492,6 @@ void Playground::firstAction (int index)
       }
 
       range = range + direction;
-      i++;
     }
   }
   else if (ground[index]->getVisual() == "__T__ ")
@@ -485,11 +500,13 @@ void Playground::firstAction (int index)
 
     while (!ground[index]->getActionBool() && abs(rangeMax) > abs(range))
     {
+      //If another unit is in range the trebuchet
       if ((ground[index + range] != nullptr) && (ground[index]->getPlayerID() != ground[index + range]->getPlayerID()))
       {
-        ground[index]->switchOnFAD();
         ground[index + range]->targeted(ground[index]->getDamages());
+        ground[index]->switchOnFAD();
 
+        //If the enemy is killed
         if (ground[index + range]->getLife() <= 0)
         {
           if (direction == 1) player1.goldPay(ground[index + range]->getPrice() / 2);
@@ -499,6 +516,7 @@ void Playground::firstAction (int index)
           ground[index + range] = nullptr;
         }
 
+        //Checks if there is second unit right after
         if (ground[index + range + direction] != nullptr && ((index + range + direction) >= 0) && ((index + range + direction) < 12))
         {
           ground[index + range + direction]->targeted(ground[index]->getDamages());
@@ -513,8 +531,10 @@ void Playground::firstAction (int index)
           }
         }
       }
+      //If there is no unit
       else if (ground[index + range] == nullptr)
       {
+        //If the enemy castle is in range
         if (((index + range) == 0) && ground[index]->getPlayerID() == 2)
         {
           player1.targeted(ground[index]->getDamages());
@@ -553,11 +573,16 @@ bool Playground::secondAction (int index)
     limit = 0;
   }
 
+
+  /*
+  * Only the warriors, super-warriors and archers have a second action
+  * They try to move forward
+  */
   if ((ground[index]->getVisual() == "__W__ ") || (ground[index]->getVisual() == "__A__ ") || (ground[index]->getVisual() == "__S__ "))
   {
     if (direction > 0)
     {
-      if (ground[index + direction] == nullptr && ((index + direction) < limit))
+      if ((ground[index + direction] == nullptr) && ((index + direction) < limit))
       {
         ground[index + direction] = ground[index];
         ground[index] = nullptr;
@@ -567,7 +592,7 @@ bool Playground::secondAction (int index)
     }
     else
     {
-      if (ground[index + direction] == nullptr && ((index + direction) > limit))
+      if ((ground[index + direction] == nullptr) && ((index + direction) > limit))
       {
         ground[index + direction] = ground[index];
         ground[index] = nullptr;
@@ -576,12 +601,14 @@ bool Playground::secondAction (int index)
       }
     }
   }
+
   return false;
 }
 
 
 void Playground::thirdAction (int index)
 {
+  //Archers, warriors and super-warriors try to attack
   if((ground[index]->getVisual() == "__W__ ") || (ground[index]->getVisual() == "__A__ ") || (ground[index]->getVisual() == "__S__ "))
   {
     if ((!ground[index]->getActionBool()) || (ground[index]->getVisual() == "__S__ "))
@@ -589,9 +616,12 @@ void Playground::thirdAction (int index)
       firstAction(index);
     }
 
+    //Reset the boolean value to tell if the first action was done
+    //The call of firstAction() turns it on if the unit can attack
     ground[index]->switchOffFAD();
   }
-  else if (ground[index]->getVisual() == "__T__ " && (!ground[index]->getActionBool()))
+  //Trebuchets try to move forward
+  else if ((ground[index]->getVisual() == "__T__ ") && (!ground[index]->getActionBool()))
   {
     int direction, limit;
 
@@ -600,7 +630,7 @@ void Playground::thirdAction (int index)
       direction = 1;
       limit = 11;
 
-      if (ground[index + direction] == nullptr && ((index + direction) < limit))
+      if ((ground[index + direction] == nullptr) && ((index + direction) < limit))
       {
         ground[index + direction] = ground[index];
         ground[index] = nullptr;
@@ -611,7 +641,7 @@ void Playground::thirdAction (int index)
       direction = -1;
       limit = 0;
 
-      if (ground[index + direction] == nullptr && ((index + direction) > limit))
+      if ((ground[index + direction] == nullptr) && ((index + direction) > limit))
       {
         ground[index + direction] = ground[index];
         ground[index] = nullptr;
@@ -628,10 +658,12 @@ void Playground::PVPGame(bool load)
   int choice;
   bool canBuy = false;
 
+  //If this is a loaded game, we start from the point where players buy units
   if (load)
   {
     display();
 
+    //If player 1 can buy a unit
     if ((player1.getGold() >= 10) && (ground[0] == nullptr))
     {
       while (!canBuy)
@@ -686,6 +718,7 @@ void Playground::PVPGame(bool load)
 
     canBuy = false;
 
+    //If player 2 can buy a unit
     if ((player2.getGold() >= 10) && (ground[0] == nullptr))
     {
       while (!canBuy)
@@ -918,11 +951,12 @@ void Playground::PVPGame(bool load)
 }
 
 
-void Playground::AIGame(bool load)
+void Playground::computerGame(bool load)
 {
   int choice;
   bool canBuy = false;
 
+  //If this is a loaded game
   if (load)
   {
     display();
@@ -1022,7 +1056,7 @@ void Playground::AIGame(bool load)
       }
     }
 
-    // First actions, Player 2
+    // First actions, Computer
     for (auto i = 11 ; i >= 0 ; i--)
     {
       if (ground[i] != nullptr && ground[i]->getPlayerID() == 2)
@@ -1055,7 +1089,7 @@ void Playground::AIGame(bool load)
       }
     }
 
-    // Second and third actions, Player 2
+    // Second and third actions, Computer
     for(auto i = 0 ; i < 12 ; i++)
     {
       if (ground[i] != nullptr && ground[i]->getPlayerID() == 2)
@@ -1133,6 +1167,7 @@ void Playground::AIGame(bool load)
 
     canBuy = false;
 
+    //Computer tries to buy the most expensive unit it can
     if ((player2.getGold() >= 10) && (ground[11] == nullptr))
     {
       if (player2.getGold() >= 20)

@@ -11,7 +11,6 @@ public:
   Warrior(int playerID);
   Warrior(int playerID, int life, bool evolved);
   ~Warrior();
-  bool superWarrior();
   std::string getVisual();
   void superWarriorEvolution();
   bool getEvolution() const;

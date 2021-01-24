@@ -1,5 +1,5 @@
 CXX=g++
-CXXFLAGS=-std=c++11 -Wall -Wextra
+CXXFLAGS=-std=c++11 -Wall -Werror -Wextra
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) $< -c -o $@

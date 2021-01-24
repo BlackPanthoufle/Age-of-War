@@ -1,7 +1,9 @@
 #ifndef TREBUCHET
 #define TREBUCHET
 
+
 #include "Unit.hpp"
+
 
 class Trebuchet : public Unit
 {
@@ -11,5 +13,6 @@ public:
   ~Trebuchet();
   std::string getVisual();
 };
+
 
 #endif

@@ -6,7 +6,5 @@ int main()
 
   playground.play();
 
-  //playground.saveScreen();
-
   return 0;
 }

@@ -1,11 +1,8 @@
 #ifndef BASE
 #define BASE
 
+
 #include <vector>
-#include "Unit.hpp"
-#include "Archer.hpp"
-#include "Trebuchet.hpp"
-#include "Warrior.hpp"
 
 
 class Base
@@ -25,5 +22,6 @@ public:
   void goldPay(int pay);
   void buyUnit(int price);
 };
+
 
 #endif

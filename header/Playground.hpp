@@ -1,6 +1,7 @@
 #ifndef PLAYGROUND
 #define PLAYGROUND
 
+
 #include <iostream>
 #include <iomanip>
 #include <vector>
@@ -13,13 +14,14 @@
 #include "Trebuchet.hpp"
 #include "Base.hpp"
 
+
 class Playground
 {
   int turns;
   const int MAXTURNS;
   Base player1, player2;
   std::vector<Unit*> ground;
-  bool AIgame, oneWins, twoWins;
+  bool computergame, oneWins, twoWins;
 
 public:
   Playground();
@@ -37,8 +39,9 @@ public:
   void firstAction(int index);
   bool secondAction(int index);
   void thirdAction(int index);
-  void AIGame(bool load);
+  void computerGame(bool load);
   void PVPGame(bool load);
 };
+
 
 #endif

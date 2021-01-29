@@ -125,7 +125,7 @@ void Playground::pauseScreen()
       }
     }
   }
-  while(!exit && (choice < '1' || choice > '2'));
+  while(!exit || (choice < '1' || choice > '2'));
 }
 
 
@@ -331,7 +331,7 @@ void Playground::play()
 
         break;
       }
-      case 4:
+      case '4':
       {
         std::cout << "BYE !" << std::endl;
         close = true;
@@ -339,13 +339,13 @@ void Playground::play()
       }
     }
   }
-  while(!close && (gamemode < '1' || gamemode > '4'));
+  while(!close || (gamemode < '1' || gamemode > '4'));
 }
 
 
 void Playground::display()
 {
-  //system("clear");
+  system("clear");
   std::cout << "ROUND " << turns << '\n';
   std::cout << "\n\n                  " << player1.getLife() << "                                                                " << player2.getLife() << '\n';
   std::cout << R"(

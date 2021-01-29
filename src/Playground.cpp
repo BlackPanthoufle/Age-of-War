@@ -160,13 +160,13 @@ void Playground::saveScreen()
 
       if (doublesCheck)
       {
-        std::string choice;
+        char choice;
 
         std::cout << "\n                        FILE ALREADY EXISTS !" << std::endl;
         std::cout << "                        DO YOU WANT TO OVERWRITE ? [y/n]  ";
         std::cin >> choice;
 
-        if (choice == "y" || choice == "Y" ) { overwrite = true; }
+        if (choice == 'y' || choice == 'Y' ) { overwrite = true; }
       }
       else overwrite = true;
     }
@@ -218,7 +218,7 @@ void Playground::play()
     )" << "\n\n";
 
 
-    std::cout << "1) PLAYER VS PLAYER\n2) PLAYER VS COMPUTER\n3) LOAD SAVE\n4) EXIT" << '\n';
+    std::cout << "1) PLAYER VS PLAYER\n2) PLAYER VS COMPUTER\n3) LOAD SAVE\n4) EXIT\n";
     std::cin >> gamemode;
     system("clear");
 
@@ -339,13 +339,13 @@ void Playground::play()
       }
     }
   }
-  while(!close);
+  while(!close && (gamemode < '1' || gamemode > '4'));
 }
 
 
 void Playground::display()
 {
-  system("clear");
+  //system("clear");
   std::cout << "ROUND " << turns << '\n';
   std::cout << "\n\n                  " << player1.getLife() << "                                                                " << player2.getLife() << '\n';
   std::cout << R"(
@@ -390,7 +390,7 @@ void Playground::display()
 
 void Playground::spawnUnit(int playerID, char choice)
 {
-  if (choice != 4)
+  if (choice != '4')
   {
     int spawnSpot;
 
@@ -676,13 +676,14 @@ void Playground::PVPGame(bool load)
     //If player 1 can buy a unit
     if ((player1.getGold() >= 10) && (ground[0] == nullptr))
     {
-      while (!canBuy)
+      do
       {
         display();
-        std::cout << "Player 1, buy a unit:\n1) Warrior (10g) 2) Archer (12g) 3) Trebuchet (20g) 4) Skip 5) Pause" << '\n';
+        std::cout << "Player 1, buy a unit:\n1) Warrior (10g) 2) Archer (12g) 3) Trebuchet (20g) 4) Skip 5) Pause\n";
         std::cin >> choice;
 
-        switch (choice) {
+        switch (choice)
+        {
           case '1':
           {
             if (player1.getGold() >= 10)
@@ -722,6 +723,7 @@ void Playground::PVPGame(bool load)
           }
         }
       }
+      while (!canBuy || (choice < '1' || choice > '4'));
       spawnUnit(1, choice);
       display();
     }
@@ -731,13 +733,14 @@ void Playground::PVPGame(bool load)
     //If player 2 can buy a unit
     if ((player2.getGold() >= 10) && (ground[0] == nullptr))
     {
-      while (!canBuy)
+      do
       {
         display();
-        std::cout << "Player 2, buy a unit:\n1) Warrior (10g) 2) Archer (12g) 3) Trebuchet (20g) 4) Skip" << '\n';
+        std::cout << "Player 2, buy a unit:\n1) Warrior (10g) 2) Archer (12g) 3) Trebuchet (20g) 4) Skip\n";
         std::cin >> choice;
 
-        switch (choice) {
+        switch (choice)
+        {
           case '1':
           {
             if (player2.getGold() >= 10)
@@ -772,6 +775,7 @@ void Playground::PVPGame(bool load)
           }
         }
       }
+      while (!canBuy || (choice < '1' || choice > '4'));
       spawnUnit(2, choice);
       display();
     }
@@ -855,13 +859,14 @@ void Playground::PVPGame(bool load)
 
     if ((player1.getGold() >= 10) && (ground[0] == nullptr))
     {
-      while (!canBuy)
+      do
       {
         display();
-        std::cout << "Player 1, buy a unit:\n1) Warrior (10g) 2) Archer (12g) 3) Trebuchet (20g) 4) Skip 5) Pause" << '\n';
+        std::cout << "Player 1, buy a unit:\n1) Warrior (10g) 2) Archer (12g) 3) Trebuchet (20g) 4) Skip 5) Pause\n";
         std::cin >> choice;
 
-        switch (choice) {
+        switch (choice)
+        {
           case '1':
           {
             if (player1.getGold() >= 10)
@@ -901,6 +906,7 @@ void Playground::PVPGame(bool load)
           }
         }
       }
+      while (!canBuy || (choice < '1' || choice > '4'));
       spawnUnit(1, choice);
       display();
     }
@@ -909,13 +915,14 @@ void Playground::PVPGame(bool load)
 
     if ((player2.getGold() >= 10) && (ground[11] == nullptr))
     {
-      while (!canBuy)
+      do
       {
         display();
-        std::cout << "Player 2, buy a unit:\n1) Warrior (10g) 2) Archer (12g) 3) Trebuchet (20g) 4) Skip" << '\n';
+        std::cout << "Player 2, buy a unit:\n1) Warrior (10g) 2) Archer (12g) 3) Trebuchet (20g) 4) Skip\n";
         std::cin >> choice;
 
-        switch (choice) {
+        switch (choice)
+        {
           case '1':
           {
             if (player2.getGold() >= 10)
@@ -950,6 +957,7 @@ void Playground::PVPGame(bool load)
           }
         }
       }
+      while (!canBuy || (choice < '1' || choice > '4'));
       spawnUnit(2, choice);
       display();
     }
@@ -963,7 +971,7 @@ void Playground::PVPGame(bool load)
 
 void Playground::computerGame(bool load)
 {
-  int choice;
+  char choice;
   bool canBuy = false;
 
   //If this is a loaded game
@@ -973,13 +981,14 @@ void Playground::computerGame(bool load)
 
     if ((player1.getGold() >= 10) && (ground[0] == nullptr))
     {
-      while (!canBuy)
+      do
       {
         display();
-        std::cout << "Player 1, buy a unit:\n1) Warrior (10g) 2) Archer (12g) 3) Trebuchet (20g) 4) Skip 5) Pause" << '\n';
+        std::cout << "Player 1, buy a unit:\n1) Warrior (10g) 2) Archer (12g) 3) Trebuchet (20g) 4) Skip 5) Pause\n";
         std::cin >> choice;
 
-        switch (choice) {
+        switch (choice)
+        {
           case '1':
           {
             if (player1.getGold() >= 10)
@@ -1019,6 +1028,7 @@ void Playground::computerGame(bool load)
           }
         }
       }
+      while (!canBuy || (choice < '1' || choice > '4'));
       spawnUnit(1, choice);
       display();
     }
@@ -1030,17 +1040,17 @@ void Playground::computerGame(bool load)
       if (player2.getGold() >= 20)
       {
         player2.buyUnit(20);
-        spawnUnit(2, 3);
+        spawnUnit(2, '3');
       }
       else if (player2.getGold() >= 12 && player2.getGold() < 20)
       {
         player2.buyUnit(12);
-        spawnUnit(2, 2);
+        spawnUnit(2, '2');
       }
       else if (player2.getGold() >= 10 && player2.getGold() < 12)
       {
         player2.buyUnit(10);
-        spawnUnit(2, 1);
+        spawnUnit(2, '1');
       }
 
       display();
@@ -1125,13 +1135,14 @@ void Playground::computerGame(bool load)
 
     if ((player1.getGold() >= 10) && (ground[0] == nullptr))
     {
-      while (!canBuy)
+      do
       {
         display();
-        std::cout << "Player 1, buy a unit:\n1) Warrior (10g) 2) Archer (12g) 3) Trebuchet (20g) 4) Skip 5) Pause" << '\n';
+        std::cout << "Player 1, buy a unit:\n1) Warrior (10g) 2) Archer (12g) 3) Trebuchet (20g) 4) Skip 5) Pause\n";
         std::cin >> choice;
 
-        switch (choice) {
+        switch (choice)
+        {
           case '1':
           {
             if (player1.getGold() >= 10)
@@ -1171,6 +1182,7 @@ void Playground::computerGame(bool load)
           }
         }
       }
+      while (!canBuy || (choice < '1' || choice > '4'));
       spawnUnit(1, choice);
       display();
     }
@@ -1183,17 +1195,17 @@ void Playground::computerGame(bool load)
       if (player2.getGold() >= 20)
       {
         player2.buyUnit(20);
-        spawnUnit(2, 3);
+        spawnUnit(2, '3');
       }
       else if (player2.getGold() >= 12 && player2.getGold() < 20)
       {
         player2.buyUnit(12);
-        spawnUnit(2, 2);
+        spawnUnit(2, '2');
       }
       else if (player2.getGold() >= 10 && player2.getGold() < 12)
       {
         player2.buyUnit(10);
-        spawnUnit(2, 1);
+        spawnUnit(2, '1');
       }
 
       display();

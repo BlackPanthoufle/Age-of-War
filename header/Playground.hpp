@@ -34,6 +34,7 @@ public:
   void pauseScreen();
   void saveScreen();
   void play();
+  void reset();
   void display();
   void spawnUnit(int playerID, char choice);
   void firstAction(int index);

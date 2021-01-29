@@ -200,6 +200,24 @@ void Playground::saveScreen()
 }
 
 
+void Playground::reset()
+{
+  oneWins = false;
+  twoWins = false;
+  turns = 0;
+  player1.setLife(100);
+  player1.setGold(0);
+  player2.setLife(100);
+  player2.setGold(0);
+
+  for (auto i = 0 ; i < 12 ; i++)
+  {
+    delete ground[i];
+    ground[i] = nullptr;
+  }
+}
+
+
 void Playground::play()
 {
   char gamemode;
@@ -338,6 +356,8 @@ void Playground::play()
         break;
       }
     }
+
+    reset();
   }
   while(!close || (gamemode < '1' || gamemode > '4'));
 }

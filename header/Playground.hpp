@@ -35,7 +35,7 @@ public:
   void saveScreen();
   void play();
   void display();
-  void spawnUnit(int playerID, int choice);
+  void spawnUnit(int playerID, char choice);
   void firstAction(int index);
   bool secondAction(int index);
   void thirdAction(int index);

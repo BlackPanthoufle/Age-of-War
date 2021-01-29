@@ -97,7 +97,7 @@ void Playground::winningScreen()
 
 void Playground::pauseScreen()
 {
-  int choice;
+  char choice;
   bool exit = false;
   do
   {
@@ -113,19 +113,19 @@ void Playground::pauseScreen()
 
     switch (choice)
     {
-      case 1:
+      case '1':
       {
         exit = true;
         break;
       }
-      case 2:
+      case '2':
       {
         saveScreen();
         break;
       }
     }
   }
-  while(!exit);
+  while(!exit && (choice < '1' || choice > '2'));
 }
 
 
@@ -202,15 +202,15 @@ void Playground::saveScreen()
 
 void Playground::play()
 {
-  int gamemode;
+  char gamemode;
   bool close = false;
 
   do
   {
     system("clear");
     std::cout << R"(
-                    █████╗  ██████╗ ███████╗     ██████╗ ███████╗    ██╗    ██╗ █████╗ ██████╗
-                    ██╔══██╗██╔════╝ ██╔════╝    ██╔═══██╗██╔════╝    ██║    ██║██╔══██╗██╔══██╗
+                    █████╗  ██████╗  ███████╗     ██████╗ ███████╗    ██╗    ██╗ █████╗ ██████╗
+                    ██╔══██╗██╔═══╝  ██╔════╝    ██╔═══██╗██╔════╝    ██║    ██║██╔══██╗██╔══██╗
                     ███████║██║  ███╗█████╗      ██║   ██║█████╗      ██║ █╗ ██║███████║██████╔╝
                     ██╔══██║██║   ██║██╔══╝      ██║   ██║██╔══╝      ██║███╗██║██╔══██║██╔══██╗
                     ██║  ██║╚██████╔╝███████╗    ╚██████╔╝██║         ╚███╔███╔╝██║  ██║██║  ██║
@@ -224,19 +224,19 @@ void Playground::play()
 
     switch (gamemode)
     {
-      case 1:
+      case '1':
       {
         computergame = false;
         PVPGame(false);
         break;
       }
-      case 2:
+      case '2':
       {
         computergame = true;
         computerGame(false);
         break;
       }
-      case 3:
+      case '3':
       {
         std::string load = "../Saved games/", selection;
         std::ifstream loadFile;
@@ -388,7 +388,7 @@ void Playground::display()
 }
 
 
-void Playground::spawnUnit(int playerID, int choice)
+void Playground::spawnUnit(int playerID, char choice)
 {
   if (choice != 4)
   {
@@ -403,17 +403,17 @@ void Playground::spawnUnit(int playerID, int choice)
 
     switch (choice)
     {
-      case 1:
+      case '1':
       {
         ground[spawnSpot] = warrior;
         break;
       }
-      case 2:
+      case '2':
       {
         ground[spawnSpot] = archer;
         break;
       }
-      case 3:
+      case '3':
       {
         ground[spawnSpot] = trebuchet;
         break;
@@ -545,10 +545,20 @@ void Playground::firstAction (int index)
           player2.targeted(ground[index]->getDamages());
           ground[index]->switchOnFAD();
         }
+        //If there is only a unit on the 4th spot of their range
         else if ((abs(range + direction) >= abs(rangeMax)) && (ground[index + range + direction] != nullptr) && (ground[index]->getPlayerID() != ground[index + range + direction]->getPlayerID()))
         {
           ground[index + range + direction]->targeted(ground[index]->getDamages());
           ground[index]->switchOnFAD();
+
+          if (ground[index + range + direction]->getLife() <= 0)
+          {
+            if (direction == 1) player1.goldPay(ground[index + range + direction]->getPrice() / 2);
+            else player2.goldPay(ground[index + range + direction]->getPrice() / 2);
+
+            delete ground[index + range + direction];
+            ground[index + range + direction] = nullptr;
+          }
         }
       }
 
@@ -655,7 +665,7 @@ void Playground::thirdAction (int index)
 
 void Playground::PVPGame(bool load)
 {
-  int choice;
+  char choice;
   bool canBuy = false;
 
   //If this is a loaded game, we start from the point where players buy units
@@ -673,7 +683,7 @@ void Playground::PVPGame(bool load)
         std::cin >> choice;
 
         switch (choice) {
-          case 1:
+          case '1':
           {
             if (player1.getGold() >= 10)
             {
@@ -682,7 +692,7 @@ void Playground::PVPGame(bool load)
             }
             break;
           }
-          case 2:
+          case '2':
           {
             if (player1.getGold() >= 12)
             {
@@ -691,7 +701,7 @@ void Playground::PVPGame(bool load)
             }
             break;
           }
-          case 3:
+          case '3':
           {
             if (player1.getGold() >= 20)
             {
@@ -700,12 +710,12 @@ void Playground::PVPGame(bool load)
             }
             break;
           }
-          case 4:
+          case '4':
           {
             canBuy = true;
             break;
           }
-          case 5:
+          case '5':
           {
             pauseScreen();
             break;
@@ -728,7 +738,7 @@ void Playground::PVPGame(bool load)
         std::cin >> choice;
 
         switch (choice) {
-          case 1:
+          case '1':
           {
             if (player2.getGold() >= 10)
             {
@@ -737,7 +747,7 @@ void Playground::PVPGame(bool load)
             }
             break;
           }
-          case 2:
+          case '2':
           {
             if (player2.getGold() >= 12)
             {
@@ -746,7 +756,7 @@ void Playground::PVPGame(bool load)
             }
             break;
           }
-          case 3:
+          case '3':
           {
             if (player2.getGold() >= 20)
             {
@@ -755,7 +765,7 @@ void Playground::PVPGame(bool load)
             }
             break;
           }
-          case 4:
+          case '4':
           {
             canBuy = true;
             break;
@@ -852,7 +862,7 @@ void Playground::PVPGame(bool load)
         std::cin >> choice;
 
         switch (choice) {
-          case 1:
+          case '1':
           {
             if (player1.getGold() >= 10)
             {
@@ -861,7 +871,7 @@ void Playground::PVPGame(bool load)
             }
             break;
           }
-          case 2:
+          case '2':
           {
             if (player1.getGold() >= 12)
             {
@@ -870,7 +880,7 @@ void Playground::PVPGame(bool load)
             }
             break;
           }
-          case 3:
+          case '3':
           {
             if (player1.getGold() >= 20)
             {
@@ -879,12 +889,12 @@ void Playground::PVPGame(bool load)
             }
             break;
           }
-          case 4:
+          case '4':
           {
             canBuy = true;
             break;
           }
-          case 5:
+          case '5':
           {
             pauseScreen();
             break;
@@ -906,7 +916,7 @@ void Playground::PVPGame(bool load)
         std::cin >> choice;
 
         switch (choice) {
-          case 1:
+          case '1':
           {
             if (player2.getGold() >= 10)
             {
@@ -915,7 +925,7 @@ void Playground::PVPGame(bool load)
             }
             break;
           }
-          case 2:
+          case '2':
           {
             if (player2.getGold() >= 12)
             {
@@ -924,7 +934,7 @@ void Playground::PVPGame(bool load)
             }
             break;
           }
-          case 3:
+          case '3':
           {
             if (player2.getGold() >= 20)
             {
@@ -933,7 +943,7 @@ void Playground::PVPGame(bool load)
             }
             break;
           }
-          case 4:
+          case '4':
           {
             canBuy = true;
             break;
@@ -970,7 +980,7 @@ void Playground::computerGame(bool load)
         std::cin >> choice;
 
         switch (choice) {
-          case 1:
+          case '1':
           {
             if (player1.getGold() >= 10)
             {
@@ -979,7 +989,7 @@ void Playground::computerGame(bool load)
             }
             break;
           }
-          case 2:
+          case '2':
           {
             if (player1.getGold() >= 12)
             {
@@ -988,7 +998,7 @@ void Playground::computerGame(bool load)
             }
             break;
           }
-          case 3:
+          case '3':
           {
             if (player1.getGold() >= 20)
             {
@@ -997,12 +1007,12 @@ void Playground::computerGame(bool load)
             }
             break;
           }
-          case 4:
+          case '4':
           {
             canBuy = true;
             break;
           }
-          case 5:
+          case '5':
           {
             pauseScreen();
             break;
@@ -1122,7 +1132,7 @@ void Playground::computerGame(bool load)
         std::cin >> choice;
 
         switch (choice) {
-          case 1:
+          case '1':
           {
             if (player1.getGold() >= 10)
             {
@@ -1131,7 +1141,7 @@ void Playground::computerGame(bool load)
             }
             break;
           }
-          case 2:
+          case '2':
           {
             if (player1.getGold() >= 12)
             {
@@ -1140,7 +1150,7 @@ void Playground::computerGame(bool load)
             }
             break;
           }
-          case 3:
+          case '3':
           {
             if (player1.getGold() >= 20)
             {
@@ -1149,12 +1159,12 @@ void Playground::computerGame(bool load)
             }
             break;
           }
-          case 4:
+          case '4':
           {
             canBuy = true;
             break;
           }
-          case 5:
+          case '5':
           {
             pauseScreen();
             break;
